@@ -26,4 +26,13 @@ public class AuthController {
                 request.password()
         );
     }
+
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequest request) {
+        userService.authenticate(
+                request.email(),
+                request.password()
+        );
+    }
+
 }
