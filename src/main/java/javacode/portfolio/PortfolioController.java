@@ -4,16 +4,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/portfolios")
 
 public class PortfolioController {
     private final PortfolioService portfolioService;
+    private final PortfolioValuationService portfolioValuationService;
 
-    public PortfolioController(PortfolioService portfolioService) {
+    public PortfolioController(
+            PortfolioService portfolioService,
+            PortfolioValuationService portfolioValuationService
+    ) {
         this.portfolioService = portfolioService;
+        this.portfolioValuationService = portfolioValuationService;
     }
 
     @PostMapping
@@ -31,5 +38,18 @@ public class PortfolioController {
     @GetMapping
     public List<Portfolio> getPortfolios(Authentication authentication) {
         return portfolioService.getPortfolios(authentication.getName());
+    }
+
+    @GetMapping("/{portfolioId}/value")
+    public BigDecimal getPortfolioValue(
+            @PathVariable UUID portfolioId,
+            @RequestParam(defaultValue = "EUR") String currency,
+            Authentication authentication
+    ) {
+        return portfolioValuationService.getPortfolioValue(
+                portfolioId,
+                authentication.getName(),
+                currency
+        );
     }
 }
