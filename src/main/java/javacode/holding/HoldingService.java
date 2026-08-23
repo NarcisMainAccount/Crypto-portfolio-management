@@ -25,12 +25,13 @@ public class HoldingService {
 
     public Holding createHolding(
             UUID portfolioId,
+            String userEmail,
             String assetId,
             String symbol,
             String name,
             BigDecimal quantity
     ) {
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+        Portfolio portfolio = portfolioRepository.findByIdAndUserEmail(portfolioId, userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found"));
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -49,7 +50,13 @@ public class HoldingService {
         return holdingRepository.save(holding);
     }
 
-    public List<Holding> getHoldings(UUID portfolioId) {
+    public List<Holding> getHoldings(UUID portfolioId, String userEmail) {
+
+        portfolioRepository
+                .findByIdAndUserEmail(portfolioId, userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found"));
         return holdingRepository.findByPortfolioId(portfolioId);
     }
+
+
 }

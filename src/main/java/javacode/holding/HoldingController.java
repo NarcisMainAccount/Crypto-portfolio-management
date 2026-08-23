@@ -1,6 +1,7 @@
 package javacode.holding;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,10 +21,12 @@ public class HoldingController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createHolding(
             @PathVariable UUID portfolioId,
-            @RequestBody CreateHoldingRequest request
+            @RequestBody CreateHoldingRequest request,
+            Authentication authentication
     ) {
         holdingService.createHolding(
                 portfolioId,
+                authentication.getName(),
                 request.assetId(),
                 request.symbol(),
                 request.name(),
@@ -33,8 +36,12 @@ public class HoldingController {
 
     @GetMapping
     public List<Holding> getHoldings(
-            @PathVariable UUID portfolioId
+            @PathVariable UUID portfolioId,
+            Authentication authentication
     ) {
-        return holdingService.getHoldings(portfolioId);
+        return holdingService.getHoldings(
+                portfolioId,
+                authentication.getName()
+        );
     }
 }
