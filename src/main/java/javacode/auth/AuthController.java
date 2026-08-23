@@ -68,4 +68,14 @@ public class AuthController {
     public String me(Authentication authentication){
         return authentication.getName();
     }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request) {
+        var session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+    }
 }
