@@ -32,3 +32,4 @@ bin/
 .idea/
 out
 cookies.txt
+target/
