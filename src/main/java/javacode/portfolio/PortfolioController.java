@@ -40,13 +40,13 @@ public class PortfolioController {
         return portfolioService.getPortfolios(authentication.getName());
     }
 
-    @GetMapping("/{portfolioId}/value")
-    public BigDecimal getPortfolioValue(
+    @GetMapping("/{portfolioId}/summary")
+    public PortfolioSummary getPortfolioSummary(
             @PathVariable UUID portfolioId,
             @RequestParam(defaultValue = "EUR") String currency,
             Authentication authentication
     ) {
-        return portfolioValuationService.getPortfolioValue(
+        return portfolioValuationService.getPortfolioSummary(
                 portfolioId,
                 authentication.getName(),
                 currency

@@ -27,10 +27,10 @@ public class PortfolioValuationService {
         this.marketDataProvider = marketDataProvider;
     }
 
-    public BigDecimal getPortfolioValue(
+    public PortfolioSummary getPortfolioSummary(
             UUID portfolioId,
             String userEmail,
-            String currnecy
+            String currency
     ) {
         portfolioRepository
                 .findByIdAndUserEmail(portfolioId, userEmail)
@@ -39,16 +39,34 @@ public class PortfolioValuationService {
         List<Holding> holdings =
                 holdingRepository.findByPortfolioId(portfolioId);
 
-        return holdings.stream()
+        List<HoldingValuation> valuations = holdings.stream()
                 .map(holding -> {
                     BigDecimal price = marketDataProvider.getPrice(
                             holding.getAssetId(),
-                            currnecy
+                            currency
                     );
 
-                    return holding.getQuantity().multiply(price);
+                    BigDecimal value =
+                            holding.getQuantity().multiply(price);
+
+                    return new HoldingValuation(
+                            holding.getSymbol(),
+                            holding.getQuantity(),
+                            price,
+                            value
+                    );
                 })
+                .toList();
+
+        BigDecimal totalValue = valuations.stream()
+                .map(HoldingValuation::value)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new PortfolioSummary(
+                currency,
+                totalValue,
+                valuations
+        );
     }
 }
 
