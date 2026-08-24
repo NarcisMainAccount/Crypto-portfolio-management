@@ -1,6 +1,7 @@
 package javacode.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import javacode.user.User;
 import javacode.user.UserService;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -27,7 +27,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
 
     //Converts JSON plain data into a RegisterRequest object
-    public void register(@RequestBody RegisterRequest request){
+    public void register(@Valid @RequestBody RegisterRequest request){
         userService.register(
                 request.email(),
                 request.username(),
@@ -37,7 +37,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public void login(
-            @RequestBody LoginRequest request,
+            @Valid @RequestBody LoginRequest request,
             HttpServletRequest httpRequest
     ) {
         User user = userService.authenticate(

@@ -1,5 +1,7 @@
 package javacode.user;
 
+import javacode.exception.DuplicateResourceException;
+import javacode.exception.InvalidCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +28,11 @@ public class UserService {
             String password
     ) {
         if(userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new DuplicateResourceException("Email already exists");
         }
 
         if(userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new DuplicateResourceException("Username already exists");
         }
 
         OffsetDateTime now = OffsetDateTime.now();
@@ -49,10 +51,10 @@ public class UserService {
 
     public User authenticate(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email"));
 
         if(!passwordEncoder.matches(password, user.getPasswordHash())){
-            throw new IllegalArgumentException("Invalid password");
+            throw new InvalidCredentialsException("Invalid password");
         }
         return user;
     }

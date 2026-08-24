@@ -1,5 +1,6 @@
 package javacode.holding;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class HoldingController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createHolding(
             @PathVariable UUID portfolioId,
-            @RequestBody CreateHoldingRequest request,
+            @Valid @RequestBody CreateHoldingRequest request,
             Authentication authentication
     ) {
         holdingService.createHolding(

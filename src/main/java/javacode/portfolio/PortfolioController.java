@@ -1,5 +1,6 @@
 package javacode.portfolio;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class PortfolioController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createPortfolio(
-            @RequestBody CreatePortfolioRequest request,
+            @Valid @RequestBody CreatePortfolioRequest request,
             Authentication authentication
     ) {
         portfolioService.createPortfolio(
