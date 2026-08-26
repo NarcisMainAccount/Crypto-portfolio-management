@@ -1,5 +1,6 @@
 package javacode.holding;
 
+import javacode.exception.ResourceNotFoundException;
 import javacode.portfolio.Portfolio;
 import javacode.portfolio.PortfolioRepository;
 import org.springframework.stereotype.Service;
@@ -58,5 +59,46 @@ public class HoldingService {
         return holdingRepository.findByPortfolioId(portfolioId);
     }
 
+    public Holding updateHoldingQuantity (
+            UUID portfolioId,
+            UUID holdingId,
+            String userEmail,
+            BigDecimal quantity
+    ) {
+        portfolioRepository
+                .findByIdAndUserEmail(portfolioId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Portfolio not found"));
+
+        Holding holding = holdingRepository.findById(holdingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Holding not found"));
+
+        if(!holding.getPortfolio().getId().equals(portfolioId)) {
+            throw new ResourceNotFoundException("Holding not found");
+        }
+
+        holding.setQuantity(quantity);
+        holding.setUpdatedAt(OffsetDateTime.now());
+
+        return holdingRepository.save(holding);
+    }
+
+    public void deleteHolding(
+            UUID portfolioId,
+            UUID holdingId,
+            String userEmail
+    ) {
+        portfolioRepository
+                .findByIdAndUserEmail(portfolioId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Portfolio not found"));
+
+        Holding holding = holdingRepository.findById(holdingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Holding not found"));
+
+        if (!holding.getPortfolio().getId().equals(portfolioId)) {
+            throw new ResourceNotFoundException("Holding not found");
+        }
+
+        holdingRepository.delete(holding);
+    }
 
 }

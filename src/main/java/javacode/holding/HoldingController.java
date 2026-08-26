@@ -45,4 +45,34 @@ public class HoldingController {
                 authentication.getName()
         );
     }
+
+    @PatchMapping("/{holdingId}")
+    public void updateHolding (
+            @PathVariable UUID portfolioId,
+            @PathVariable UUID holdingId,
+            @Valid @RequestBody UpdateHoldingRequest request,
+            Authentication authentication
+    ) {
+        holdingService.updateHoldingQuantity(
+                portfolioId,
+                holdingId,
+                authentication.getName(),
+                request.quantity()
+        );
+    }
+
+    @DeleteMapping("/{holdingId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteHolding(
+            @PathVariable UUID portfolioId,
+            @PathVariable UUID holdingId,
+            Authentication authentication
+    ) {
+        holdingService.deleteHolding(
+                portfolioId,
+                holdingId,
+                authentication.getName()
+        );
+    }
+
 }

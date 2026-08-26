@@ -90,4 +90,12 @@ public class Holding {
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
