@@ -53,4 +53,29 @@ public class PortfolioController {
                 currency
         );
     }
+
+    @PatchMapping("/{portfolioId}")
+    public void updatePortfolio(
+            @PathVariable UUID portfolioId,
+            @Valid @RequestBody UpdatePortfolioRequest request,
+            Authentication authentication
+    ) {
+        portfolioService.updatePortfolioName(
+                portfolioId,
+                authentication.getName(),
+                request.name()
+        );
+    }
+
+    @DeleteMapping("/{portfolioId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePortfolio(
+            @PathVariable UUID portfolioId,
+            Authentication authentication
+    ) {
+        portfolioService.deletePortfolio(
+                portfolioId,
+                authentication.getName()
+        );
+    }
 }

@@ -58,4 +58,12 @@ public class Portfolio {
     public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

@@ -1,5 +1,6 @@
 package javacode.portfolio;
 
+import javacode.exception.ResourceNotFoundException;
 import javacode.user.User;
 import javacode.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,31 @@ public class PortfolioService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return portfolioRepository.findByUserId(user.getId());
+    }
+
+    public Portfolio updatePortfolioName(
+            UUID portfolioId,
+            String userEmail,
+            String name
+    ) {
+        Portfolio portfolio = portfolioRepository
+                .findByIdAndUserEmail(portfolioId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Portfolio not found"));
+
+        portfolio.setName(name);
+        portfolio.setUpdatedAt(OffsetDateTime.now());
+
+        return portfolioRepository.save(portfolio);
+    }
+
+    public void deletePortfolio(
+            UUID portfolioId,
+            String userEmail
+    ) {
+        Portfolio portfolio = portfolioRepository
+                .findByIdAndUserEmail(portfolioId, userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Portfolio not found"));
+
+        portfolioRepository.delete(portfolio);
     }
 }
