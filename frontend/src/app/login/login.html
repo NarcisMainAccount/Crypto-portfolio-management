@@ -1,16 +1,1 @@
-<h2>Login</h2>
-
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-  <div>
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email">
-  </div>
-
-  <div>
-    <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password">
-  </div>
-
-  <button type="submit">Login</button>
-
+<main class="auth-page"><section class="auth-intro"><a class="brand" routerLink="/login"><span class="brand-mark">◈</span> Arcfolio</a><div class="intro-copy"><p class="eyebrow">CRYPTO PORTFOLIO INTELLIGENCE</p><h1>Know exactly where your crypto stands.</h1><p>Bring every crypto position into one clear, calm workspace. Prices and portfolio value are refreshed directly from the market.</p></div><div class="feature-list"><span><b>01</b> Track every holding</span><span><b>02</b> Live valuation in EUR or USD</span><span><b>03</b> Keep portfolios organised</span></div></section><section class="auth-panel"><form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate><p class="eyebrow">{{ isRegistering ? 'START TRACKING' : 'WELCOME BACK' }}</p><h2>{{ isRegistering ? 'Create your account' : 'Sign in to your workspace' }}</h2><p class="form-subtitle">{{ isRegistering ? 'Your first portfolio is only a few seconds away.' : 'Your portfolios are waiting for you.' }}</p>@if (errorMessage) { <p class="form-alert">{{ errorMessage }}</p> }<label for="email">Email address</label><input id="email" type="email" formControlName="email" placeholder="you@example.com" autocomplete="email">@if (loginForm.controls.email.touched && loginForm.controls.email.invalid) { <small>Please enter a valid email.</small> }@if (isRegistering) { <label for="username">Username</label><input id="username" type="text" formControlName="username" placeholder="Choose a username" autocomplete="username"> @if (loginForm.controls.username.touched && loginForm.controls.username.invalid) { <small>Use at least 3 characters.</small> } }<label for="password">Password</label><input id="password" type="password" formControlName="password" placeholder="At least 8 characters" [attr.autocomplete]="isRegistering ? 'new-password' : 'current-password'">@if (loginForm.controls.password.touched && loginForm.controls.password.invalid) { <small>Use at least 8 characters.</small> }<button class="primary-button" type="submit" [disabled]="isSubmitting">{{ isSubmitting ? 'Please wait…' : (isRegistering ? 'Create account' : 'Sign in') }} <span>→</span></button><p class="switch-mode">{{ isRegistering ? 'Already have an account?' : 'New to Arcfolio?' }} <button type="button" (click)="toggleMode()">{{ isRegistering ? 'Sign in' : 'Create an account' }}</button></p></form></section></main>

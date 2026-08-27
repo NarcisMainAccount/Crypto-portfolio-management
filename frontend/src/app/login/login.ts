@@ -1,55 +1,50 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { ApiService } from '../api.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
 export class Login {
-
+  isRegistering = false;
+  isSubmitting = false;
+  errorMessage = '';
   loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    username: new FormControl('', { nonNullable: true }),
+    password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8)] })
   });
 
-  onSubmit() {
-    console.log(this.loginForm.value);
+  constructor(
+    private readonly api: ApiService,
+    private readonly router: Router
+  ) {}
+
+  toggleMode(): void {
+    this.isRegistering = !this.isRegistering;
+    this.errorMessage = '';
+    this.loginForm.controls.username.setValidators(this.isRegistering ? [Validators.required, Validators.minLength(3)] : []);
+    this.loginForm.controls.username.updateValueAndValidity();
   }
 
-  import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-
-@Component({
-  selector: 'app-login',
-  imports: [ReactiveFormsModule],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
-})
-export class Login {
-
-  loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
-  });
-
-  constructor(private http: HttpClient) {}
-
-  onSubmit() {
-    this.http.post(
-      'http://localhost:8080/api/auth/login',
-      this.loginForm.value,
-      {
-        withCredentials: true
-      }
-    ).subscribe({
+  onSubmit(): void {
+    if (this.loginForm.invalid || this.isSubmitting) { this.loginForm.markAllAsTouched(); return; }
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    const { email, username, password } = this.loginForm.getRawValue();
+    const request = this.isRegistering ? this.api.register({ email, username, password }) : this.api.login(email, password);
+    request.subscribe({
       next: () => {
-        console.log('Login successful');
+        if (this.isRegistering) { this.isRegistering = false; this.isSubmitting = false; this.loginForm.controls.password.reset(); return; }
+        this.router.navigate(['/dashboard']);
       },
-      error: (error) => {
-        console.error('Login failed', error);
+      error: (error: { error?: string }) => {
+        this.errorMessage = error.error || (this.isRegistering ? 'Unable to create your account.' : 'Email or password is incorrect.');
+        this.isSubmitting = false;
       }
     });
   }
